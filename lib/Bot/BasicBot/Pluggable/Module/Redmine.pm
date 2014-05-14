@@ -18,7 +18,11 @@ sub init {
 
 sub told {
     my ( $self, $mess ) = @_;
-
+    my $blacklist_channels = $self->get('user_channel_blacklist');
+    my $this_channel       = $mess->{channel};
+    if ( grep { $_ eq $this_channel } @$blacklist_channels ) {
+        return;
+    }
     my $body = $mess->{body};
     if ( $body =~ m/\#(\d+)/ ) {
         my $ticket = $1;
