@@ -5,7 +5,7 @@ use warnings;
 our $VERSION = 0.001;
 
 use base 'Bot::BasicBot::Pluggable::Module';
-use Data::Dump qw( dump );
+#use Data::Dump qw( dump );
 
 sub help {
     return "Speaks links to Redmine based on revision and ticket numbers";
@@ -13,13 +13,14 @@ sub help {
 
 sub init {
     my $self = shift;
-    $self->config( { redmine_url => 'http://redmine.org/', } );
+    $self->config( { user_redmine_url => 'http://redmine.org/', } );
 }
 
 sub told {
     my ( $self, $mess ) = @_;
 
-    if ( $mess =~ m/\b(\#\d+)\b/ ) {
+    my $body = $mess->{body};
+    if ( $body =~ m/\#(\d+)/ ) {
         my $ticket = $1;
         return $self->url_for_ticket($ticket);
     }
@@ -28,7 +29,7 @@ sub told {
 
 sub url_for_ticket {
     my ( $self, $tkt ) = @_;
-    my $base = $self->get('redmine_url');
+    my $base = $self->get('user_redmine_url');
     return sprintf( "%s/issues/%s", $base, $tkt );
 }
 
